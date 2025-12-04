@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vite
+dist/
+.vite/
+*.local
+
+# Rust / Cargo
+target/
+Cargo.lock
+
+# DFX / local state
+.canister_ids
+.local-repl/
+.dfx/
+
+# Misc
+.DS_Store
+.idea/
+.vscode/

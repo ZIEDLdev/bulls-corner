@@ -1,0 +1,67 @@
+type MessageId = nat64;
+type RoomId = nat64;
+
+type Message = record {
+  id : MessageId;
+  room_id : RoomId;
+  author : principal;
+  content : text;
+  timestamp : nat64;
+  reply_to : opt MessageId;
+  edited : bool;
+  tip_total_e8s : nat64;
+};
+
+type Profile = record {
+  owner : principal;
+  nickname : opt text;
+  bio : opt text;
+  join_date : nat64;
+  tips_given_e8s : nat64;
+  tips_received_e8s : nat64;
+  messages_posted : nat64;
+  referral_code : opt text;
+  referral_count : nat64;
+};
+
+type Room = record {
+  id : RoomId;
+  name : text;
+  description : text;
+  creator : principal;
+  is_private : bool;
+  created_at : nat64;
+};
+
+type LeaderboardEntry = record {
+  user : principal;
+  score_e8s : nat64;
+  nickname : opt text;
+};
+
+service : {
+  // Identity & time
+  whoami : () -> (principal) query;
+  get_time_nanos : () -> (nat64) query;
+
+  // Profiles
+  get_profile : (principal) -> (opt Profile) query;
+  get_my_profile : () -> (opt Profile) query;
+  upsert_profile : (opt text, opt text) -> (Profile);
+
+  // Rooms
+  create_room : (text, text, bool) -> (Room);
+  list_rooms : () -> (vec Room) query;
+
+  // Messages
+  send_message : (RoomId, text, opt MessageId) -> (Message);
+  edit_message : (MessageId, text) -> ();
+  list_messages : (RoomId, opt nat64, nat32) -> (vec Message) query;
+
+  // Tipping & leaderboard
+  tip_message : (MessageId, nat64) -> ();
+  get_leaderboard : (text) -> (vec LeaderboardEntry) query;
+
+  // Referrals
+  register_referral : (text) -> ();
+}
